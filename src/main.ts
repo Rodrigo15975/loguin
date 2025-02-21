@@ -1,9 +1,33 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
+import { Logger } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  await app.listen(process.env.PORT ?? 3000)
+  app.useLogger(
+    process.env.NODE_ENV === 'development'
+      ? ['log', 'debug', 'error', 'warn', 'verbose']
+      : ['error', 'warn', 'log'],
+  )
+  const PORT = process.env.PORT || 3000
+  await app.listen(PORT)
   console.log(`Server coriendo:${await app.getUrl()} `)
 }
 bootstrap()
+  .then(() => {
+    if (process.env.NODE_ENV === 'development')
+      return Logger.verbose(
+        'Server running on: ',
+        process.env.PORT,
+        'NODE_ENV: ',
+        process.env.NODE_ENV,
+      )
+
+    Logger.log(
+      'Server running on: ',
+      process.env.PORT,
+      'NODE_ENV: ',
+      process.env.NODE_ENV,
+    )
+  })
+  .catch((err) => Logger.error(err))
