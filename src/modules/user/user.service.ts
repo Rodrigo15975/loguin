@@ -8,17 +8,26 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
+    console.log(createUserDto)
     await this.prismaService.user.create({
       data: {
         password: '123456',
-        role: 'ADMINISTRADOR',
+        role: {
+          connect: {
+            id: 1,
+          },
+        },
         username: '12345',
       },
     })
   }
 
-  findAll() {
-    return `This action returns all user`
+  async findAll() {
+    return await this.prismaService.user.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+    })
   }
 
   findOne(id: number) {
@@ -26,6 +35,7 @@ export class UserService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
+    console.log(updateUserDto)
     return `This action updates a #${id} user`
   }
 

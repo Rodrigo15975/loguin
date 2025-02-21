@@ -9,9 +9,12 @@ async function bootstrap() {
       ? ['log', 'debug', 'error', 'warn', 'verbose']
       : ['error', 'warn', 'log'],
   )
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  })
   const PORT = process.env.PORT || 3000
   await app.listen(PORT)
-  console.log(`Server coriendo:${await app.getUrl()} `)
 }
 bootstrap()
   .then(() => {
@@ -22,7 +25,6 @@ bootstrap()
         'NODE_ENV: ',
         process.env.NODE_ENV,
       )
-
     Logger.log(
       'Server running on: ',
       process.env.PORT,
